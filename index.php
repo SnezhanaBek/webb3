@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Анкета — Задание 3</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+        }
+        .radio-group input {
+            width: auto;
+        }
+        select[multiple] {
+            height: 120px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .error-message {
+            background: #fee;
+            color: #c00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c00;
+        }
+        .success {
+            background: #e0ffe8;
+            color: #2a6e3b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2a6e3b;
+        }
+        .field-error {
+            border: 2px solid red !important;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Регистрационная анкета</h1>
+
+    <?php
+    session_start();
+    
+    if (isset($_GET['success'])) {
+        echo '<div class="success">✅ Данные успешно сохранены! Спасибо.</div>';
+        unset($_SESSION['errors']);
+        unset($_SESSION['old']);
+    }
+    
+    $errors = $_SESSION['errors'] ?? [];
+    $old = $_SESSION['old'] ?? [];
+    
+    if (!empty($errors)) {
+        echo '<div class="error-message">⚠️ Пожалуйста, исправьте ошибки:</div>';
+        echo '<ul>';
+        foreach ($errors as $error) {
+            echo "<li>$error</li>";
+        }
+        echo '</ul>';
+    }
+    ?>
+
+    <form action="save.php" method="POST">
+        <div class="form-group">
+            <label>1. ФИО *</label>
+            <input type="text" name="fio" 
+                   value="<?php echo htmlspecialchars($old['fio'] ?? ''); ?>"
+                   class="<?php echo isset($errors['fio']) ? 'field-error' : ''; ?>"
+                   required maxlength="150" 
+                   placeholder="Иванов Иван Иванович">
+        </div>
+
+        <div class="form-group">
+            <label>2. Телефон *</label>
+            <input type="tel" name="phone" 
+                   value="<?php echo htmlspecialchars($old['phone'] ?? ''); ?>"
+                   class="<?php echo isset($errors['phone']) ? 'field-error' : ''; ?>"
+                   required placeholder="+7 (999) 123-45-67">
+        </div>
+
+        <div class="form-group">
+            <label>3. E-mail *</label>
+            <input type="email" name="email" 
+                   value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>"
+                   class="<?php echo isset($errors['email']) ? 'field-error' : ''; ?>"
+                   required placeholder="example@mail.ru">
+        </div>
+
+        <div class="form-group">
+            <label>4. Дата рождения *</label>
+            <input type="date" name="birth_date" 
+                   value="<?php echo htmlspecialchars($old['birth_date'] ?? ''); ?>"
+                   class="<?php echo isset($errors['birth_date']) ? 'field-error' : ''; ?>"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label>5. Пол *</label>
+            <div class="radio-group">
+                <label><input type="radio" name="gender" value="male" <?php echo ($old['gender'] ?? '') == 'male' ? 'checked' : ''; ?>> Мужской</label>
+                <label><input type="radio" name="gender" value="female" <?php echo ($old['gender'] ?? '') == 'female' ? 'checked' : ''; ?>> Женский</label>
+                <label><input type="radio" name="gender" value="other" <?php echo ($old['gender'] ?? '') == 'other' ? 'checked' : ''; ?>> Другой</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>6. Любимые языки программирования *</label>
+            <select name="languages[]" multiple 
+                    class="<?php echo isset($errors['languages']) ? 'field-error' : ''; ?>">
+                <option value="1">Pascal</option>
+                <option value="2">C</option>
+                <option value="3">C++</option>
+                <option value="4">JavaScript</option>
+                <option value="5">PHP</option>
+                <option value="6">Python</option>
+                <option value="7">Java</option>
+                <option value="8">Haskell</option>
+                <option value="9">Clojure</option>
+                <option value="10">Prolog</option>
+                <option value="11">Scala</option>
+                <option value="12">Go</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>7. Биография</label>
+            <textarea name="biography" rows="5" placeholder="Расскажите о себе..."><?php echo htmlspecialchars($old['biography'] ?? ''); ?></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" name="contract" value="1" <?php echo isset($old['contract']) ? 'checked' : ''; ?>>
+            <label>Я ознакомлен(а) с контрактом *</label>
+        </div>
+
+        <button type="submit">Сохранить</button>
+    </form>
+</div>
+<?php
+unset($_SESSION['errors']);
+unset($_SESSION['old']);
+?>
+</body>
+</html>
