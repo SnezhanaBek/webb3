@@ -78,100 +78,46 @@
         button:hover {
             background: #2980b9;
         }
-        .error-message {
-            background: #fee;
-            color: #c00;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #c00;
-        }
-        .success {
-            background: #e0ffe8;
-            color: #2a6e3b;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #2a6e3b;
-        }
-        .field-error {
-            border: 2px solid red !important;
-        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Регистрационная анкета</h1>
+    <p style="color: gray; text-align: center;">(Форма только для просмотра. Для сохранения данных нужен PHP-сервер.)</p>
 
-    <?php
-    session_start();
-    
-    if (isset($_GET['success'])) {
-        echo '<div class="success">✅ Данные успешно сохранены! Спасибо.</div>';
-        unset($_SESSION['errors']);
-        unset($_SESSION['old']);
-    }
-    
-    $errors = $_SESSION['errors'] ?? [];
-    $old = $_SESSION['old'] ?? [];
-    
-    if (!empty($errors)) {
-        echo '<div class="error-message">⚠️ Пожалуйста, исправьте ошибки:</div>';
-        echo '<ul>';
-        foreach ($errors as $error) {
-            echo "<li>$error</li>";
-        }
-        echo '</ul>';
-    }
-    ?>
-
-    <form action="save.php" method="POST">
+    <form action="#" method="POST">
         <div class="form-group">
             <label>1. ФИО *</label>
-            <input type="text" name="fio" 
-                   value="<?php echo htmlspecialchars($old['fio'] ?? ''); ?>"
-                   class="<?php echo isset($errors['fio']) ? 'field-error' : ''; ?>"
-                   required maxlength="150" 
-                   placeholder="Иванов Иван Иванович">
+            <input type="text" name="fio" placeholder="Иванов Иван Иванович">
         </div>
 
         <div class="form-group">
             <label>2. Телефон *</label>
-            <input type="tel" name="phone" 
-                   value="<?php echo htmlspecialchars($old['phone'] ?? ''); ?>"
-                   class="<?php echo isset($errors['phone']) ? 'field-error' : ''; ?>"
-                   required placeholder="+7 (999) 123-45-67">
+            <input type="tel" name="phone" placeholder="+7 (999) 123-45-67">
         </div>
 
         <div class="form-group">
             <label>3. E-mail *</label>
-            <input type="email" name="email" 
-                   value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>"
-                   class="<?php echo isset($errors['email']) ? 'field-error' : ''; ?>"
-                   required placeholder="example@mail.ru">
+            <input type="email" name="email" placeholder="example@mail.ru">
         </div>
 
         <div class="form-group">
             <label>4. Дата рождения *</label>
-            <input type="date" name="birth_date" 
-                   value="<?php echo htmlspecialchars($old['birth_date'] ?? ''); ?>"
-                   class="<?php echo isset($errors['birth_date']) ? 'field-error' : ''; ?>"
-                   required>
+            <input type="date" name="birth_date">
         </div>
 
         <div class="form-group">
             <label>5. Пол *</label>
             <div class="radio-group">
-                <label><input type="radio" name="gender" value="male" <?php echo ($old['gender'] ?? '') == 'male' ? 'checked' : ''; ?>> Мужской</label>
-                <label><input type="radio" name="gender" value="female" <?php echo ($old['gender'] ?? '') == 'female' ? 'checked' : ''; ?>> Женский</label>
-                <label><input type="radio" name="gender" value="other" <?php echo ($old['gender'] ?? '') == 'other' ? 'checked' : ''; ?>> Другой</label>
+                <label><input type="radio" name="gender" value="male"> Мужской</label>
+                <label><input type="radio" name="gender" value="female"> Женский</label>
+                <label><input type="radio" name="gender" value="other"> Другой</label>
             </div>
         </div>
 
         <div class="form-group">
             <label>6. Любимые языки программирования *</label>
-            <select name="languages[]" multiple 
-                    class="<?php echo isset($errors['languages']) ? 'field-error' : ''; ?>">
+            <select name="languages[]" multiple>
                 <option value="1">Pascal</option>
                 <option value="2">C</option>
                 <option value="3">C++</option>
@@ -189,20 +135,16 @@
 
         <div class="form-group">
             <label>7. Биография</label>
-            <textarea name="biography" rows="5" placeholder="Расскажите о себе..."><?php echo htmlspecialchars($old['biography'] ?? ''); ?></textarea>
+            <textarea name="biography" rows="5" placeholder="Расскажите о себе..."></textarea>
         </div>
 
         <div class="form-group checkbox-group">
-            <input type="checkbox" name="contract" value="1" <?php echo isset($old['contract']) ? 'checked' : ''; ?>>
+            <input type="checkbox" name="contract" value="1">
             <label>Я ознакомлен(а) с контрактом *</label>
         </div>
 
         <button type="submit">Сохранить</button>
     </form>
 </div>
-<?php
-unset($_SESSION['errors']);
-unset($_SESSION['old']);
-?>
 </body>
 </html>
